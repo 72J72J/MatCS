@@ -9,3 +9,4 @@
 ## Data Generation
 
 ## Run the Code
+  python main.py
