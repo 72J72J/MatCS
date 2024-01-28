@@ -9,4 +9,7 @@
 ## Data Generation
 
 ## Run the Code
-  python main.py
+```shell
+cd data
+python processing.py
+```
