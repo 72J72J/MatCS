@@ -24,18 +24,6 @@ def get_args():
                         help='name of labels file in case dataset is enourmous')
     parser.add_argument('--data_dir_h', default='/data/ydai/tzj/', type=str,
                         help='directory of data to be processed. Expect a labels1.smi file and associated images')
-    # parser.add_argument('--data_dir_C', default=r'C:\Users\big_boss\Desktop\小论文\数据部分\数据集\training_C', type=str,
-    #                     help='directory of data to be processed. Expect a labels1.smi file and associated images')
-    # parser.add_argument('--data_dir', default=r'C:\Users\big_boss\Desktop\小论文\数据部分\数据集\training_C', type=str,
-    #                     help='directory of data to be processed. Expect a labels.smi file and associated images')
-    # parser.add_argument('--val_data_dir_C', default='/data2/ydai/GCN/data/validation_C', type=str,
-    #                     help='directory of data to be processed. Expect a labels.smi file and associated images')
-    # parser.add_argument('--val_data_dir', default='/data2/ydai/GCN/data/validation_H', type=str,
-    #                     help='directory of data to be processed. Expect a labels.smi file and associated images')
-    # parser.add_argument('--data_split', default='train', type=str,
-    #                     help='name of the portion of data being processed. Typical names are training, validation, and evaluation.')
-    # parser.add_argument('--config_output_name', default='dataset_img2smi.pkl', type=str,
-    #                     help='name of json file to store processable metadata')
     parser.add_argument('--input_csv', default='./train.csv', type=str,
                         help='prefix for output image, caption, and caption length files.')
     parser.add_argument('--input_csv_val', default='./validation.csv', type=str,
@@ -43,7 +31,6 @@ def get_args():
     parser.add_argument('--output_pt', default='./processed/train.pt', type=str,
                         help='prefix for output image, caption, and caption length files.')
     parser.add_argument('--output', default='NMR_train', type=str, help='output folder path.')
-    # parser.add_argument('--process_img', action='store_true', default=False, help='create image files')
     parser.add_argument('--epochs', default=10, type=int, help='Train epochs')
     parser.add_argument('--num_workers', default=8, type=int, help='Workers for data loading')
     parser.add_argument('--batch_size', default=2048, type=int, help='Size of sampled batch')
