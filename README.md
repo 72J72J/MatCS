@@ -2,7 +2,7 @@
 ## Overview
 It is a binary classification model named MatCS, which is designed to automate the prediction of relationships between NMR spectral images (including 1H NMR and 13C NMR) and the molecular structure of target compounds.
 ## Requirements
-详见。文件
+Please refer to the requirement.txt for more details.
 ## Folder Specification
 
 ## Data Generation
