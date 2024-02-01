@@ -11,7 +11,7 @@ import numpy as np
 os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
 import argparse
 from tqdm import tqdm
-from GATencoderattentionxin import Resnet101Encoder
+from GATencoderattention import Resnet101Encoder
 from utils import CaptionDataset, clip_gradient, adjust_learning_rate, AverageMeter, accuracy, set_seed
 import pandas as pd
 import sys, os
