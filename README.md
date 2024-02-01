@@ -6,7 +6,7 @@ It is a binary classification model named MatCS, which is designed to automate t
 ## Folder Specification
 
 ## Data Generation
-核磁数据来自核磁软件，预测功能由青岛腾龙公司提供，仅供学术使用
+The NMR spectra data comes from MestRenova software, with predictive capabilities provided by Qingdao Tenglong Technology Co., Ltd., strictly for academic use.
 ## Run the Code
 ```shell
 cd data
