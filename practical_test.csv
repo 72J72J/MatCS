@@ -1,0 +1,7 @@
+smiles,NMR,label
+C/C=C/C(C)=O,0.png,1
+C/C=C/C(C)(C)O,1.png,1
+CC(=O)CC(C)C,2.png,1
+CC(=O)/C=C/c1ccccc1,3.png,1
+CCC(C)(O)/C=C/c1ccccc1,4.png,1
+CCC(CC(C)=O)c1ccccc1,5.png,1
