@@ -12,9 +12,8 @@ from torch_geometric.nn import global_mean_pool as gap, global_max_pool as gmp
 class ChannelAttention(nn.Module):
     def __init__(self, in_planes, ratio=16):
         super(ChannelAttention, self).__init__()
-        self.avg_pool = nn.AdaptiveAvgPool2d(1)  # 定义全局平均池化
-        self.max_pool = nn.AdaptiveMaxPool2d(1)  # 定义全局最大池化
-        # 定义CBAM中的通道依赖关系学习层，注意这里是使用1x1的卷积实现的，而不是全连接层
+        self.avg_pool = nn.AdaptiveAvgPool2d(1)
+        self.max_pool = nn.AdaptiveMaxPool2d(1)
         self.fc = nn.Sequential(nn.Conv2d(in_planes, in_planes // 16, 1, bias=False),
                                 nn.ReLU(),
                                 nn.Conv2d(in_planes // 16, in_planes, 1, bias=False))
@@ -22,26 +21,23 @@ class ChannelAttention(nn.Module):
 
     def forward(self, x):
         # print(x.shape)
-        avg_out = self.fc(self.avg_pool(x))  # 实现全局平均池化
-        max_out = self.fc(self.max_pool(x))  # 实现全局最大池化
-        out = avg_out + max_out  # 两种信息融合
-        # 最后利用sigmoid进行赋权
+        avg_out = self.fc(self.avg_pool(x))
+        max_out = self.fc(self.max_pool(x))
+        out = avg_out + max_out
         return self.sigmoid(out)
 
 
 class SpatialAttention(nn.Module):
     def __init__(self, kernel_size=7):
         super(SpatialAttention, self).__init__()
-        # 定义7*7的空间依赖关系学习层
         self.conv1 = nn.Conv2d(2, 1, kernel_size, padding=kernel_size // 2, bias=False)
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, x):
-        avg_out = torch.mean(x, dim=1, keepdim=True)  # 实现channel维度的平均池化
-        max_out, _ = torch.max(x, dim=1, keepdim=True)  # 实现channel维度的最大池化
-        x = torch.cat([avg_out, max_out], dim=1)  # 拼接上述两种操作的到的两个特征图
-        x = self.conv1(x)  # 学习空间上的依赖关系
-        # 对空间元素进行赋权
+        avg_out = torch.mean(x, dim=1, keepdim=True)
+        max_out, _ = torch.max(x, dim=1, keepdim=True)
+        x = torch.cat([avg_out, max_out], dim=1)
+        x = self.conv1(x)
         return self.sigmoid(x)
 
 
