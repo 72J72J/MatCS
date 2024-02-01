@@ -37,34 +37,22 @@ class CaptionDataset(Dataset):
         :param data_name: base name of processed datasets
         """
         # Open hdf5 file where images are stored
-
         self.h = h5py.File(os.path.join(data_folder,data_name + '.hdf5'), 'r')
         self.imgsH = self.h['images']
         self.c = h5py.File(os.path.join(data_folder, C_data_name + '.hdf5'), 'r')
         self.imgsC = self.c['images']
 
         # Load encoded captions (completely into memory)
-
         # Total number of datapoints
-        # self.dataset_size = self.h['images'].shape[0]
         self.transforms = transforms  # transform
         self.cpi = 1
 
 
     def __getitem__(self, i):
-        # print(len(self.h['images'])）
         img1 = torch.FloatTensor(self.imgsH[i] / 255.)
-        #img2 = torch.FloatTensor(self.imgsC[i] / 255.)
         if self.transform is not None:
             img1 = self.transform(img1)
-            #img2 = self.transform(img2)
-
-
-
-
-
         data = (img1, caption, label, img2)
-
         return data
 
     def __len__(self):
@@ -112,8 +100,6 @@ def accuracy(output, targets, k):
     correct = ind.eq(targets.view(-1, 1).expand_as(ind))
     #print(correct)
     correct_total = correct.view(-1).float().sum()  # 0D tensor
-
-    # return correct_total.item() * (100.0 / batch_size)
     return correct_total * (100.0 / batch_size)
 
 
@@ -142,15 +128,10 @@ def adjust_learning_rate(optimizer, shrink_factor):
     print("The new learning rate is %f\n" % (optimizer.param_groups[0]['lr'],))
 
 
-
-
 class TestbedDataset(InMemoryDataset):   #   train_data = TestbedDataset(root='data', dataset=dataset+'_train', xd=train_drugs, xt=train_prots, y=train_Y,smile_graph=smile_graph)
     def __init__(self,data_folder, data_name,C_data_name ,transforms, root='./', dataset='davis',
                  xd=None,  y=None, transform=None,
                  pre_transform=None,smile_graph=None, ):
-        # TestbedDataset(root='./', dataset='train', xd=train_drugs, y=train_Y, smile_graph =train_smile_graph,
-        #                NMR_H=images_H, NMR_C=images_C)
-
 
         #root is required for save preprocessed data, default is '/tmp'
         super(TestbedDataset, self).__init__(root, transform, pre_transform)
@@ -170,15 +151,6 @@ class TestbedDataset(InMemoryDataset):   #   train_data = TestbedDataset(root='d
             data = self.process(xd, y,smile_graph,self.imgsH,self.imgsC,self.transforms)
             self.data, self.slices = data
             print(self.data)
-
-    # def forward(self):
-    #     train_data = self.train_data
-    #
-    #     return train_data
-
-            #self.data, self.slices = torch.load(self.processed_paths[0])
-            #print('self.data',self.data)
-            #print('self.slices',self.slices)
 
     @property
     def raw_file_names(self):
@@ -200,8 +172,6 @@ class TestbedDataset(InMemoryDataset):   #   train_data = TestbedDataset(root='d
         if not os.path.exists(self.processed_dir):
             os.makedirs(self.processed_dir)
 
-
-
     def process(self, xd, y,smile_graph,imgsH,imgsC,transforms):
         assert (len(xd)  == len(y)), "The three lists must be the same length!"
         data_list = []
@@ -214,46 +184,29 @@ class TestbedDataset(InMemoryDataset):   #   train_data = TestbedDataset(root='d
             img2 = torch.FloatTensor(imgsC[i] / 255.)
             img1 = transforms(img1)
             img2 = transforms(img2)
-            
-
-
 
             smiles = xd[i]
-            #print(smiles)
             nmr_H = img1.unsqueeze(0)
-            #print('nmr',nmr_H)
             nmr_C = img2.unsqueeze(0)
             labels = y[i]
-            #print('label',labels)
-
-            #print("targets",target)
             # convert SMILES to molecular representation using rdkit
             c_size, features, edge_index = smile_graph[smiles]
             print(c_size)
-            #print("features",features)
-            #print("edge_index",edge_index.shape)
             # make the graph ready for PyTorch Geometrics GCN algorithms:
             GCNData = DATA.Data(x=torch.Tensor(features),
                                 edge_index=torch.LongTensor(edge_index).transpose(1, 0),
                                 y=torch.FloatTensor([labels]))
 
-            #GCNData.target = torch.FloatTensor([nmr_H])
             GCNData.target = nmr_H
             a = GCNData.x
             b = GCNData.edge_index
             c = GCNData.target
-            #print(c)
 
             print("features",a.shape,b.shape,c.shape)
             GCNData.__setitem__('c_size', torch.LongTensor([c_size]))
             GCNData.__setitem__('nmr_C', nmr_C)
             # append graph, label and target sequence to data list
             data_list.append(GCNData)
-
-
-            #data = (a,b,c)
-            #print(data)
-        #print(data_list)
 
         if self.pre_filter is not None:
             data_list = [data for data in data_list if self.pre_filter(data)]
@@ -264,7 +217,6 @@ class TestbedDataset(InMemoryDataset):   #   train_data = TestbedDataset(root='d
         data, slices = self.collate(data_list)
         data = (data,slices)
         # save preprocessed data:
-        #torch.save((data, slices), self.processed_paths[0])
         return data
 
 def rmse(y,f):
