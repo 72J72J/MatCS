@@ -22,7 +22,7 @@ def get_args():
     parser.add_argument('--img_size', type=int, default=256, help='Size of image X and Y dimensions')
     parser.add_argument('--label_filename', type=str, default='labels.smi',
                         help='name of labels file in case dataset is enourmous')
-    parser.add_argument('--data_dir_h', default='/data/ydai/tzj/', type=str,
+    parser.add_argument('--data_dir_h', default='your file where you store the .hdf5 files', type=str,
                         help='directory of data to be processed. Expect a labels1.smi file and associated images')
     parser.add_argument('--input_csv', default='./train.csv', type=str,
                         help='prefix for output image, caption, and caption length files.')
@@ -37,7 +37,7 @@ def get_args():
     parser.add_argument('--encoder_type', default='RESNET101', type=str, help='Type of encoder architecture',
                         choices=['RESNET101'])
     parser.add_argument('--cuda', default = True, help='use CUDA')
-    parser.add_argument('--model_path', default='./', type=str, help='model path')
+    parser.add_argument('--model_path', default='your model path', type=str, help='model path')
     parser.add_argument('--load', action='store_true', help='load existing model')
     parser.add_argument('--encoder_lr', default=1e-4, type=float, help='encoder learning rate if fine tuning')
     parser.add_argument('--seed', default=42, type=int, help='Set random seed')
