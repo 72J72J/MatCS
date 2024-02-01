@@ -105,7 +105,6 @@ class Resnet101Encoder(nn.Module):
             nn.ReLU(),
             nn.Linear(48, 1),
             nn.Sigmoid()
-
         )
 
     def forward(self, data):
@@ -120,7 +119,6 @@ class Resnet101Encoder(nn.Module):
         x , attn_weights = self.conv1(x, edge_index, return_attention_weights = True)
         x = self.relu(x)
         x = self.conv2(x, edge_index)
-        # attention = x
         x = self.relu(x)
         # apply global max pooling (gmp) and global mean pooling (gap)
         x = torch.cat([gmp(x, batch), gap(x, batch)], dim=1)
@@ -128,39 +126,23 @@ class Resnet101Encoder(nn.Module):
         x = self.dropout(x)
         x = self.fc_g2(x)
 
-
-        print("x", x.shape)  # x torch.Size([32, 128])
-        #print('img1',image)
-
         img1 = self.resnet(image)
-        # print(img1)
-
-        print(img1.shape)
         img2 = self.resnet(image_C)
         img1 = self.ca(img1) * img1
         img1 = self.sa(img1) * img1
         img2 = self.ca(img2) * img2
         img2 = self.sa(img2) * img2
-        #
         img1 = self.avg_pool(img1)
         img2 = self.avg_pool(img2)
-        # # print(img1.shape)
         img1 = img1.reshape(img1.size(0), -1)
         img2 = img2.reshape(img2.size(0), -1)
-        #
         img1 = self.resnet_fc(img1)
         img2 = self.resnet_fc(img2)
-        print(img1.shape)
 
-        # param.requires_grad = False
         image = torch.cat((img1, img2), dim=1)
 
-
-        # 特征融合
         X = torch.cat((image, x), dim=1)
         x1 = self.layer1(X)
         x1 += self.projection1(X)
         out = self.out(x1)
         return out , attn_weights
-
-        #print(image)
