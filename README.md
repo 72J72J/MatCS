@@ -7,6 +7,7 @@ Please refer to the requirement.txt for more details.
 
 ## Data Generation
 The NMR spectra data comes from MestRenova software, with predictive capabilities provided by Qingdao Tenglong Technology Co., Ltd., strictly for academic use.
+This file is large and you can download it from https://drive.google.com/drive/folders/1Ea6SNo5MmwItuRoaWcDvZECka6gBnUp9?usp=sharing.
 ## Run the Code
 We provide five versions of our model. They learn the substructure representations using SMILES, ECFP, GCN, GCN_GAT and GCN_GAT_CBAM, respectively.
 
