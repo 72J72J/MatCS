@@ -144,19 +144,19 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Preprocess training data')
     parser.add_argument('--max_length', type=int, default=100, help='Max length of tokenized smiles')
     parser.add_argument('--img_size', type=int, default=256, help='Size of image X and Y dimensions')
-    parser.add_argument('--label_filename', type=str, default='labels_sim.smi',
+    parser.add_argument('--label_filename', type=str, default='labels.smi',
                         help='name of labels file in case dataset is enourmous')
-    parser.add_argument('--tokenizer', default='./tokenizers/tokenizer_vocab_100.json', type=str,
+    parser.add_argument('--tokenizer', default='/tokenizers/tokenizer_vocab_100.json', type=str,
                         help='tokenizer name in the folder tokenizers/')
     parser.add_argument('--test_string', type=str, default='C1C2=CC=CC=C2C3=CC4=CC=CC=C4C=C31',
                         help='a SMILES string to test tokenizer with')
-    parser.add_argument('--data_dir', default='./external_test_C', type=str,
+    parser.add_argument('--data_dir', default='folder containing the NMR spectra images', type=str,
                         help='directory of data to be processed. Expect a labels.smi file and associated images')
     parser.add_argument('--data_split', default='train', type=str,
                         help='name of the portion of data being processed. Typical names are training, validation, and evaluation.')
     parser.add_argument('--config_output_name', default='dataset_img2smi.pkl', type=str,
                         help='name of json file to store processable metadata')
-    parser.add_argument('--image_output_filename', default='external_test_C', type=str,
+    parser.add_argument('--image_output_filename', default='your image output filename', type=str,
                         help='prefix for output image, caption, and caption length files.')
     parser.add_argument('--output_path', default='./', type=str, help='output folder path.')
     parser.add_argument('--process_img', action='store_true', default=False, help='create image files')
