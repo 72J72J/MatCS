@@ -1,11 +1,6 @@
-import torch
-from torch import nn
 import torchvision
-import torch.nn.functional as f
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-from torch_geometric.nn import GCNConv, global_max_pool as gmp
 from torch_geometric.nn import GCNConv, GATConv, GINConv, global_add_pool
 from torch_geometric.nn import global_mean_pool as gap, global_max_pool as gmp
 
@@ -20,7 +15,6 @@ class ChannelAttention(nn.Module):
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, x):
-        # print(x.shape)
         avg_out = self.fc(self.avg_pool(x))
         max_out = self.fc(self.max_pool(x))
         out = avg_out + max_out
@@ -60,14 +54,13 @@ class Resnet101Encoder(nn.Module):
         # combined layers
         self.fc1 = nn.Linear(2 * output_dim, 1024)
         self.fc2 = nn.Linear(1024, 512)
-        # self.out = nn.Linear(512, self.n_output)
 
         self.enc_image_size = encoded_image_size
         self.resnet = torchvision.models.resnet101(pretrained=True)
         # pretrained ImageNet ResNet-101
 
         self.channel_in = self.resnet.fc.in_features
-        modules = list(self.resnet.children())[:-2]  # Remove linear and pool layers (since we're not doing classification)
+        modules = list(self.resnet.children())[:-2]
         self.resnet = nn.Sequential(*modules)
 
         for param in self.resnet.parameters():
@@ -79,7 +72,6 @@ class Resnet101Encoder(nn.Module):
 
             nn.Linear(self.channel_in, 256),
             nn.ReLU(),
-            #nn.Dropout(0.1),  # 0.2
             nn.Linear(256, 128),
             nn.ReLU()
         )
@@ -105,16 +97,12 @@ class Resnet101Encoder(nn.Module):
             nn.ReLU(),
             nn.Linear(48, 1),
             nn.Sigmoid()
+
         )
 
     def forward(self, data):
 
-
         x, edge_index, batch, image,  image_C = data.x, data.edge_index, data.batch, data.target, data.nmr_C
-        print(x.shape)  # (16568,78)
-        print(edge_index.shape)  # (2,36640)
-        print(batch.shape)  # 16568
-        print('target', image_C.shape)
 
         x , attn_weights = self.conv1(x, edge_index, return_attention_weights = True)
         x = self.relu(x)
@@ -126,7 +114,9 @@ class Resnet101Encoder(nn.Module):
         x = self.dropout(x)
         x = self.fc_g2(x)
 
+
         img1 = self.resnet(image)
+
         img2 = self.resnet(image_C)
         img1 = self.ca(img1) * img1
         img1 = self.sa(img1) * img1
@@ -139,6 +129,7 @@ class Resnet101Encoder(nn.Module):
         img1 = self.resnet_fc(img1)
         img2 = self.resnet_fc(img2)
 
+        # param.requires_grad = False
         image = torch.cat((img1, img2), dim=1)
 
         X = torch.cat((image, x), dim=1)
