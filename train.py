@@ -31,9 +31,9 @@ def get_args():
     parser.add_argument('--output_pt', default='./processed/train.pt', type=str,
                         help='prefix for output image, caption, and caption length files.')
     parser.add_argument('--output', default='NMR_train', type=str, help='output folder path.')
-    parser.add_argument('--epochs', default=10, type=int, help='Train epochs')
+    parser.add_argument('--epochs', default=200, type=int, help='Train epochs')
     parser.add_argument('--num_workers', default=8, type=int, help='Workers for data loading')
-    parser.add_argument('--batch_size', default=2048, type=int, help='Size of sampled batch')
+    parser.add_argument('--batch_size', default=64, type=int, help='Size of sampled batch')
     parser.add_argument('--encoder_type', default='RESNET101', type=str, help='Type of encoder architecture',
                         choices=['RESNET101'])
     parser.add_argument('--cuda', default = True, help='use CUDA')
@@ -41,7 +41,7 @@ def get_args():
     parser.add_argument('--load', action='store_true', help='load existing model')
     parser.add_argument('--encoder_lr', default=1e-4, type=float, help='encoder learning rate if fine tuning')
     parser.add_argument('--seed', default=42, type=int, help='Set random seed')
-    parser.add_argument('--cuda_device', default='cuda:0', type=str, help='cuda device to use. aka gpu')
+    parser.add_argument('--cuda_device', default='cuda:3', type=str, help='cuda device to use. aka gpu')
     args = parser.parse_args()
     return args
 
@@ -104,7 +104,6 @@ def main(args):
     train_smiles = list(df['smiles'])
     df = pd.read_csv('./' + 'validation' + '.csv')
     val_smiles = list(df['smiles'])
-
     train_smile_graph = {}
     val_smile_graph = {}
     for smile in train_smiles:
