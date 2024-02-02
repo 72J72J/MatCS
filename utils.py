@@ -2,19 +2,12 @@ import os
 import random
 import numpy as np
 import h5py
-import json
 import torch
 from torch.utils.data import Dataset
-from tqdm import tqdm
-from collections import Counter
-from random import seed, choice, sample
-import os
-import numpy as np
 from math import sqrt
 from scipy import stats
 from torch_geometric.data import InMemoryDataset, DataLoader
 from torch_geometric import data as DATA
-import torch
 
 
 def set_seed(seed: int):
@@ -52,7 +45,9 @@ class CaptionDataset(Dataset):
         img1 = torch.FloatTensor(self.imgsH[i] / 255.)
         if self.transform is not None:
             img1 = self.transform(img1)
+
         data = (img1, caption, label, img2)
+
         return data
 
     def __len__(self):
@@ -78,7 +73,6 @@ class AverageMeter(object):
         self.sum += val * n
         self.count += n
         self.avg = self.sum / self.count
-        # print(1)
 
 
 def accuracy(output, targets, k):
@@ -89,7 +83,6 @@ def accuracy(output, targets, k):
     :param k: k in top-k accuracy
     :return: top-k accuracy
     """
-    #print('***************************************************************')
 
     batch_size = targets.size(0)
 
@@ -98,8 +91,8 @@ def accuracy(output, targets, k):
         if output[i, :] > 0.5:
             ind[i, :] = 1
     correct = ind.eq(targets.view(-1, 1).expand_as(ind))
-    #print(correct)
     correct_total = correct.view(-1).float().sum()  # 0D tensor
+
     return correct_total * (100.0 / batch_size)
 
 
@@ -128,14 +121,12 @@ def adjust_learning_rate(optimizer, shrink_factor):
     print("The new learning rate is %f\n" % (optimizer.param_groups[0]['lr'],))
 
 
-class TestbedDataset(InMemoryDataset):   #   train_data = TestbedDataset(root='data', dataset=dataset+'_train', xd=train_drugs, xt=train_prots, y=train_Y,smile_graph=smile_graph)
+class TestbedDataset(InMemoryDataset):
     def __init__(self,data_folder, data_name,C_data_name ,transforms, root='./', dataset='davis',
                  xd=None,  y=None, transform=None,
                  pre_transform=None,smile_graph=None, ):
 
-        #root is required for save preprocessed data, default is '/tmp'
         super(TestbedDataset, self).__init__(root, transform, pre_transform)
-        # benchmark dataset, default = 'davis'
         self.dataset = dataset
         self.h = h5py.File(os.path.join(data_folder, data_name + '.hdf5'), 'r')
         self.imgsH = self.h['images']
@@ -155,14 +146,12 @@ class TestbedDataset(InMemoryDataset):   #   train_data = TestbedDataset(root='d
     @property
     def raw_file_names(self):
         pass
-        #return ['some_file_1', 'some_file_2', ...]
 
     @property
     def processed_file_names(self):
         return [self.dataset + '.pt']
 
     def download(self):
-        # Download to `self.raw_dir`.
         pass
 
     def _download(self):
@@ -172,11 +161,11 @@ class TestbedDataset(InMemoryDataset):   #   train_data = TestbedDataset(root='d
         if not os.path.exists(self.processed_dir):
             os.makedirs(self.processed_dir)
 
+
     def process(self, xd, y,smile_graph,imgsH,imgsC,transforms):
         assert (len(xd)  == len(y)), "The three lists must be the same length!"
         data_list = []
         data_len = len(xd)
-        print(data_len)
         for i in range(data_len):
             print('Converting SMILES to graph: {}/{}'.format(i+1, data_len))
             print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIII",i+1)
@@ -184,14 +173,13 @@ class TestbedDataset(InMemoryDataset):   #   train_data = TestbedDataset(root='d
             img2 = torch.FloatTensor(imgsC[i] / 255.)
             img1 = transforms(img1)
             img2 = transforms(img2)
-
+            
             smiles = xd[i]
             nmr_H = img1.unsqueeze(0)
             nmr_C = img2.unsqueeze(0)
             labels = y[i]
             # convert SMILES to molecular representation using rdkit
             c_size, features, edge_index = smile_graph[smiles]
-            print(c_size)
             # make the graph ready for PyTorch Geometrics GCN algorithms:
             GCNData = DATA.Data(x=torch.Tensor(features),
                                 edge_index=torch.LongTensor(edge_index).transpose(1, 0),
@@ -216,7 +204,6 @@ class TestbedDataset(InMemoryDataset):   #   train_data = TestbedDataset(root='d
         print('Graph construction done. Saving to file.')
         data, slices = self.collate(data_list)
         data = (data,slices)
-        # save preprocessed data:
         return data
 
 def rmse(y,f):
