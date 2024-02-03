@@ -10,7 +10,9 @@ Please refer to the requirements.txt for more details.
 
 ## Folder Specification
 
-data/ folder contains necessary data for train the model.
+### data/ folder contains necessary data for train the model.
+
+### scripts/ folder contains necessary code for train the model.
 
 process_data.py: Code for processing data.
 
