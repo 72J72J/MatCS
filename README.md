@@ -12,17 +12,19 @@ Please refer to the requirements.txt for more details.
 
 ### data/ folder contains necessary data for train the model.
 
-### scripts/ folder contains necessary code for train the model.
+### scripts/ folder contains necessary code for train the model and predicting the relationships between NMR spectral images and target compounds' structure.
 
 process_data.py: Code for processing data.
 
-predict.py: Code for predicting the relationships between NMR spectral images and target compounds' structure.
-
 train.py: Train our MatCS Model.
 
-GATencoderattention.py: Code for model definition.
+predict.py: Code for predicting the relationships between NMR spectral images and target compounds' structure.
+
+encoder.py, GATencoder.py, GATencoderattention.py: Code for model definition.
 
 utils.py: Code for metric calculations and some data preparation.
+
+train_tokenizer.py: Code for training your tokenizers.
 
 ## Data Generation
 
