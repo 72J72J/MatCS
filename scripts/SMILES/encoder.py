@@ -2,7 +2,6 @@ import torch
 from torch import nn
 import torchvision
 
-
 class Resnet101Encoder(nn.Module):
     """
     Resnet101 based encoder Encoder.
